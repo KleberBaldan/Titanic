@@ -1,0 +1,35 @@
+576, 761: Pessoas diferentes e aparentemente não familiares (SibSp e Parch) zerados, compartilhando mesmo ingresso 358585
+Pessoas diferentes e aparentemente não familiares (SibSp e Parch) zerados, compartilhando mesmo ingresso 1601
+1297: Possui informações em Parênteses, o qual não é o nome do conjuge
+1170, 1254: Conjuges que possuem diferenças no SibSp
+1283: Possível viúva
+789: Criança casada?!
+41: Suposta viúva?!
+----
+#%%
+def custear_por_pessoa(args):
+    ingresso, tarifa = args[0], args[1]
+    return tarifa / dados.PassengerId.loc[dados.Ticket==ingresso].count()
+
+dados['RatePerPerson'] = dados[['Ticket', 'Fare']].apply(custear_por_pessoa, axis=1)
+#%%
+plt.figure(dpi=96)
+sns.boxplot(x='Pclass', y='RatePerPerson', data=dados, palette='viridis');
+#%%
+def normalizar_custo(args):
+    custos, custo = dados.RatePerPerson.loc[dados.Pclass==args[0]], args[1]
+    q1 = custos.quantile(.25)
+    q3 = custos.quantile(.75)
+    limite_inferior = q1 - 1.5 * (q3 - q1)
+    limite_superior = q3 + 1.5 * (q3 - q1)
+
+    return custos.median() if custo < limite_inferior or custo > limite_superior else custo
+
+dados['RatePerPersonNorm'] = dados[['Pclass', 'RatePerPerson']].apply(normalizar_custo, axis=1)
+#%%
+fig, [ax0, ax1, ax2] = plt.subplots(1, 3, dpi=110)
+fig.tight_layout()
+sns.boxplot(x='Pclass', y='Fare', data=dados, palette='viridis', ax=ax0)
+sns.boxplot(x='Pclass', y='RatePerPerson', data=dados, palette='viridis', ax=ax1);
+sns.boxplot(x='Pclass', y='RatePerPersonNorm', data=dados, palette='viridis', ax=ax2);
+#%%

@@ -4,7 +4,7 @@
 - *Problema:*
 > Avaliar e modelar os dados de modo a ser possível atingir o objetivo.
 - *Objetivo:*
-> Predizer a sobrevivência de integrantes cujo não possuem esta informação.
+> Predizer a sobrevivência de integrantes que não possuem tal informação.
 
 # Entendimento dos Dados
 - *Formato*:
